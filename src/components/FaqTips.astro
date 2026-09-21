@@ -1,0 +1,43 @@
+---
+export const tipsFaqItems = [
+  {
+    q: "What is the No Tax on Tips deduction?",
+    a: "Schedule 1-A Part II lets eligible workers deduct qualified tips as a federal income-tax deduction, subject to a $25,000 annual cap and a MAGI phaseout. Social Security and Medicare taxes on tips still apply. This calculator estimates that deduction for educational purposes only.",
+  },
+  {
+    q: "Is the tips cap different for single vs. married?",
+    a: "No — the tips deduction cap is $25,000 per return for both single and married filing jointly. MAGI phaseout thresholds still differ ($150,000 vs. $300,000).",
+  },
+  {
+    q: "How does the MAGI phaseout work for tips?",
+    a: "Same method as overtime: if MAGI exceeds the threshold, reduce the deduction by $100 for each full $1,000 over the threshold (floor division). Deduction floors at $0.",
+  },
+  {
+    q: "Do I need a tipped occupation?",
+    a: "Yes. IRS guidance limits the deduction to tipped occupations. Check the IRS tipped occupations list and Schedule 1-A instructions. This tool does not validate your job title.",
+  },
+  {
+    q: "Do Social Security and Medicare still apply to tips?",
+    a: "Yes. This deduction is for federal income tax only. FICA (Social Security and Medicare) taxes on tips still apply.",
+  },
+  {
+    q: "Can married filing separately claim the tips deduction?",
+    a: "Generally no — married taxpayers must file jointly. This calculator treats MFS as ineligible.",
+  },
+  {
+    q: "Is this tax advice or TurboTax?",
+    a: "No. Independent educational estimate only from NoTaxOTCalculator — not affiliated with the IRS or TurboTax, and not a substitute for professional tax advice or official forms.",
+  },
+];
+---
+
+<section id="faq" class="faq mt-12" aria-labelledby="faq-heading">
+  <h2 id="faq-heading" class="mb-2 text-xl">FAQ — no tax on tips calculator</h2>
+  <p class="mb-4 text-sm text-mute">Common questions about Schedule 1-A Part II tips deduction estimates.</p>
+  {tipsFaqItems.map((item) => (
+    <details>
+      <summary>{item.q}</summary>
+      <div class="answer">{item.a}</div>
+    </details>
+  ))}
+</section>

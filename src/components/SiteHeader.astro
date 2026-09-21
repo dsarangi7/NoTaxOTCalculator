@@ -1,0 +1,99 @@
+---
+interface Props {
+  current?: "ot" | "tips" | "about" | "contact" | "faq" | "none";
+}
+const { current = "none" } = Astro.props;
+---
+
+<header class="site-header sticky top-0 z-40 border-b border-hairline bg-canvas-elevated/95 backdrop-blur supports-[backdrop-filter]:bg-canvas-elevated/90">
+  <div class="site-wrap flex flex-wrap items-center justify-between gap-2 py-2.5 sm:gap-3 sm:py-3.5">
+    <a
+      href="/"
+      class="group inline-flex min-h-11 items-center gap-2 no-underline text-ink hover:text-ink"
+      aria-label="NoTaxOTCalculator home"
+    >
+      <img
+        src="/icons/android-chrome-192x192.png"
+        width="32"
+        height="32"
+        alt=""
+        class="h-8 w-8 rounded-[6px]"
+        decoding="async"
+      />
+      <span class="text-[15px] font-semibold tracking-tight">
+        NoTaxOTCalculator
+      </span>
+    </a>
+    <nav class="flex flex-wrap items-center gap-0.5 text-sm sm:gap-1" aria-label="Primary">
+      <a
+        href="/"
+        class:list={[
+          "inline-flex min-h-11 items-center rounded-full px-3 py-2 no-underline",
+          current === "ot" ? "bg-hairline-soft font-medium text-ink" : "text-body hover:bg-hairline-soft hover:text-ink",
+        ]}
+        aria-current={current === "ot" ? "page" : undefined}
+      >Overtime</a>
+      <a
+        href="/tips/"
+        class:list={[
+          "inline-flex min-h-11 items-center rounded-full px-3 py-2 no-underline",
+          current === "tips" ? "bg-hairline-soft font-medium text-ink" : "text-body hover:bg-hairline-soft hover:text-ink",
+        ]}
+        aria-current={current === "tips" ? "page" : undefined}
+      >Tips</a>
+      <a
+        href="/about/"
+        class:list={[
+          "inline-flex min-h-11 items-center rounded-full px-3 py-2 no-underline",
+          current === "about" ? "bg-hairline-soft font-medium text-ink" : "text-body hover:bg-hairline-soft hover:text-ink",
+        ]}
+        aria-current={current === "about" ? "page" : undefined}
+      >About</a>
+      <a
+        href="/contact/"
+        class:list={[
+          "inline-flex min-h-11 items-center rounded-full px-3 py-2 no-underline",
+          current === "contact" ? "bg-hairline-soft font-medium text-ink" : "text-body hover:bg-hairline-soft hover:text-ink",
+        ]}
+        aria-current={current === "contact" ? "page" : undefined}
+      >Contact</a>
+      <a
+        href="/faq/"
+        class:list={[
+          "inline-flex min-h-11 items-center rounded-full px-3 py-2 no-underline",
+          current === "faq" ? "bg-hairline-soft font-medium text-ink" : "text-body hover:bg-hairline-soft hover:text-ink",
+        ]}
+        aria-current={current === "faq" ? "page" : undefined}
+      >FAQs</a>
+      <button
+        type="button"
+        class="theme-toggle inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-hairline px-2.5 text-base text-ink hover:bg-hairline-soft"
+        data-theme-toggle
+        aria-label="Switch to dark mode"
+        title="Switch theme"
+      >
+        <span aria-hidden="true" data-theme-icon>☾</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector("[data-theme-toggle]");
+  const icon = document.querySelector("[data-theme-icon]");
+
+  function updateThemeButton() {
+    const dark = document.documentElement.dataset.theme === "dark";
+    toggle?.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+    if (icon) icon.textContent = dark ? "☀" : "☾";
+  }
+
+  toggle?.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("notaxotcalc-theme", next);
+    updateThemeButton();
+  });
+
+  updateThemeButton();
+</script>

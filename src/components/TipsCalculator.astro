@@ -1,0 +1,179 @@
+---
+import PayrollCallout from "./PayrollCallout.astro";
+---
+
+<section class="card" aria-labelledby="calc-heading">
+  <h2 id="calc-heading" class="mb-4 text-xl">Estimate your tips deduction</h2>
+
+  <form id="tips-form" novalidate>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="field">
+        <label for="filing-status">Filing status</label>
+        <select id="filing-status" name="filing-status" required>
+          <option value="single">Single</option>
+          <option value="mfj">Married Filing Jointly</option>
+          <option value="mfs">Married Filing Separately</option>
+          <option value="hoh">Head of Household</option>
+          <option value="qss">Qualifying Surviving Spouse</option>
+        </select>
+        <span class="hint">Tips cap is $25,000 per return (same for single and MFJ). MFS is generally ineligible.</span>
+      </div>
+      <div class="field">
+        <label for="tax-year">Tax year</label>
+        <select id="tax-year" name="tax-year">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+        </select>
+        <span class="hint">Same MVP caps and thresholds for 2025–2028. Deduction expires after 2028 (sunset).</span>
+      </div>
+    </div>
+
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="field">
+        <label for="qualified-tips">Qualified tips ($)</label>
+        <input type="number" id="qualified-tips" name="qualified-tips" min="0" step="0.01" placeholder="e.g. 18000" inputmode="decimal" required />
+        <span class="hint">Tips that qualify under Schedule 1-A Part II for your tipped occupation.</span>
+      </div>
+      <div class="field">
+        <label for="magi">MAGI estimate ($)</label>
+        <input type="number" id="magi" name="magi" min="0" step="1" placeholder="e.g. 145000" inputmode="decimal" required />
+        <span class="hint">Modified adjusted gross income estimate for phaseout (Schedule 1-A Part I).</span>
+      </div>
+    </div>
+
+    <div class="callout mt-4">
+      Occupation must be a <strong class="text-ink">tipped occupation</strong>. See the
+      <a href="https://www.irs.gov/newsroom/schedule-1-a-additional-deductions-what-to-know-about-the-new-form" rel="noopener noreferrer" target="_blank">IRS Schedule 1-A guidance</a>
+      and tipped occupations list. This calculator does not verify your occupation.
+    </div>
+
+    <button type="submit" class="btn-primary mt-6">Calculate deduction</button>
+  </form>
+</section>
+
+<section id="tips-results" class="results mt-6 card hidden" aria-live="polite">
+  <div id="tips-alert" class="alert" hidden></div>
+
+  <div class="result-hero mb-4">
+    <div class="text-xs font-medium uppercase tracking-wide text-mute">Estimated Schedule 1-A tips deduction</div>
+    <div class="amount" id="tips-deduction">$0</div>
+    <div class="mt-1 text-sm text-mute">
+      Tax year <span id="tips-year-label">2026</span> · <span id="tips-status-label">Single</span>
+    </div>
+  </div>
+
+  <PayrollCallout subject="tips" />
+
+  <div class="result-rows mt-4">
+    <div class="result-row">
+      <span class="k">Qualified tips used</span>
+      <span class="v" id="tips-qualified">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Annual cap (per return)</span>
+      <span class="v" id="tips-cap">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Amount before phaseout</span>
+      <span class="v" id="tips-before">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Phaseout reduction</span>
+      <span class="v" id="tips-reduction">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Unused cap before phaseout</span>
+      <span class="v" id="tips-remaining">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">MAGI phaseout threshold</span>
+      <span class="v" id="tips-threshold-label">—</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  import {
+    computeTipsDeduction,
+    money,
+    moneyExact,
+    parseNum,
+  } from "../lib/schedule1a";
+
+  function setText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  function showResults(on) {
+    const el = document.getElementById("tips-results");
+    if (!el) return;
+    el.classList.toggle("hidden", !on);
+    el.hidden = !on;
+  }
+
+  function setAlert(id, html, kind) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!html) {
+      el.hidden = true;
+      el.innerHTML = "";
+      return;
+    }
+    el.hidden = false;
+    el.className = "alert alert-" + (kind || "info");
+    el.innerHTML = html;
+  }
+
+  function runTipsCalc() {
+    const out = computeTipsDeduction({
+      filingStatus: document.getElementById("filing-status").value,
+      taxYear: document.getElementById("tax-year").value,
+      magi: parseNum(document.getElementById("magi").value),
+      qualifiedTips: parseNum(document.getElementById("qualified-tips").value),
+    });
+
+    showResults(true);
+
+    if (out.kind === "blocked") {
+      setAlert("tips-alert", out.alertHtml, out.alertKind);
+      setText("tips-deduction", money(0));
+      setText("tips-qualified", "—");
+      setText("tips-cap", "—");
+      setText("tips-before", "—");
+      setText("tips-reduction", "—");
+      setText("tips-remaining", "—");
+      setText("tips-year-label", out.year);
+      setText("tips-status-label", out.statusLabel);
+      setText("tips-threshold-label", "—");
+      return;
+    }
+
+    setText("tips-deduction", money(out.result.deduction));
+    setText("tips-qualified", moneyExact(out.result.qualified));
+    setText("tips-cap", money(out.result.cap));
+    setText("tips-before", money(out.result.beforePhaseout));
+    setText("tips-reduction", money(out.result.reduction));
+    setText("tips-remaining", moneyExact(out.result.remainingRoom));
+    setText("tips-year-label", out.year);
+    setText("tips-status-label", out.statusLabel);
+    setText("tips-threshold-label", money(out.result.threshold));
+    setAlert("tips-alert", out.alertHtml, out.alertKind || "info");
+  }
+
+  const form = document.getElementById("tips-form");
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      runTipsCalc();
+    });
+    form.addEventListener("input", () => {
+      if (!document.getElementById("tips-results")?.classList.contains("hidden")) runTipsCalc();
+    });
+    form.addEventListener("change", () => {
+      if (!document.getElementById("tips-results")?.classList.contains("hidden")) runTipsCalc();
+    });
+  }
+</script>

@@ -1,0 +1,341 @@
+---
+import PayrollCallout from "./PayrollCallout.astro";
+---
+
+<section class="card" aria-labelledby="calc-heading">
+  <h2 id="calc-heading" class="mb-4 text-xl">Estimate your overtime deduction</h2>
+
+  <form id="ot-form" novalidate>
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="field">
+        <label for="filing-status">Filing status</label>
+        <select id="filing-status" name="filing-status" required>
+          <option value="single">Single</option>
+          <option value="mfj">Married Filing Jointly</option>
+          <option value="mfs">Married Filing Separately</option>
+          <option value="hoh">Head of Household</option>
+          <option value="qss">Qualifying Surviving Spouse</option>
+        </select>
+        <span class="hint">MFJ uses $25,000 cap / $300,000 MAGI threshold. MFS is generally ineligible.</span>
+      </div>
+      <div class="field">
+        <label for="tax-year">Tax year</label>
+        <select id="tax-year" name="tax-year">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+          <option value="2028">2028</option>
+        </select>
+        <span class="hint">Same MVP caps and thresholds for 2025–2028. Deduction expires after 2028 (sunset).</span>
+      </div>
+    </div>
+
+    <div id="ty2025-note" class="callout callout-warn mt-4" hidden role="note">
+      <strong class="text-warning-deep">Tax year 2025 reporting gap.</strong>
+      Employers may <em>not</em> separately report qualified overtime on your W-2 for TY2025.
+      You may need to reconstruct the premium from pay stubs using
+      <a href="https://www.irs.gov/instructions" rel="noopener noreferrer" target="_blank">Schedule 1-A instructions</a>
+      and the
+      <a href="https://www.irs.gov/newsroom/what-to-know-about-the-no-tax-on-overtime-deduction" rel="noopener noreferrer" target="_blank">IRS OT explainer</a>.
+      Prefer <strong>Mode B</strong> (pay-stub “OT premium” line or employer-reported qualified OT) — Mode A is a last resort.
+    </div>
+    <div id="ty2026-note" class="callout mt-4" role="note">
+      <strong class="text-ink">Tax year 2026+.</strong>
+      Clearer employer reporting of qualified OT may become available; caps and MAGI thresholds in this MVP stay the same.
+      Deduction sunsets after tax year 2028.
+    </div>
+
+    <fieldset class="mt-5 rounded-[6px] border border-hairline p-4" id="flsa-gate">
+      <legend class="px-1 text-sm font-medium text-ink">FLSA §7 eligibility (required)</legend>
+      <p class="gate-prompt mb-3 text-sm text-body" id="flsa-prompt">
+        Was this overtime required under the federal FLSA (FLSA §7) — not only state law or company policy?
+      </p>
+      <div class="flex flex-col gap-2" role="radiogroup" aria-labelledby="flsa-prompt">
+        <label class="radio-option">
+          <input type="radio" name="flsa7" id="flsa-yes" value="yes" required />
+          <span>Yes — required under federal FLSA §7</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="flsa7" id="flsa-no" value="no" />
+          <span>No — state law or company policy only</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="flsa7" id="flsa-unsure" value="unsure" />
+          <span>Not sure</span>
+        </label>
+      </div>
+      <span class="hint mt-2 block text-xs text-mute">Only overtime required under FLSA §7 is Schedule 1-A deductible (CRS). State-only or policy OT does not qualify.</span>
+    </fieldset>
+
+    <div class="mt-5">
+      <span id="mode-label" class="text-sm font-medium text-ink">How do you want to enter overtime?</span>
+      <div class="mode-toggle" role="group" aria-labelledby="mode-label">
+        <button type="button" id="mode-a" class="active" aria-pressed="true">OT hours + regular rate</button>
+        <button type="button" id="mode-b" aria-pressed="false">Enter premium $ directly</button>
+      </div>
+    </div>
+
+    <div id="panel-mode-a" class="mode-panel active">
+      <div class="callout mt-0">
+        <strong class="text-ink">Prefer Mode B when you can.</strong>
+        If your employer reports qualified OT or your pay stub shows an “OT premium” line, switch to
+        <em>Enter premium $ directly</em> — especially for tax year 2025.
+        Mode A only models FLSA time-and-a-half (1.5×). Double-time / daily OT / 7th-day OT are not modeled — use Mode B.
+      </div>
+      <fieldset class="mt-4 rounded-[6px] border border-hairline p-4">
+        <legend class="px-1 text-sm font-medium text-ink">Regular-rate knowledge</legend>
+        <div class="flex flex-col gap-2" role="radiogroup" aria-label="Do you know your FLSA regular rate?">
+          <label class="radio-option">
+            <input type="radio" name="rr-know" id="rr-know-yes" value="known" checked />
+            <span>I know my FLSA regular rate</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="rr-know" id="rr-know-estimate" value="estimate" />
+            <span>Simple hourly estimate only — may be wrong if I have bonuses / non-hourly pay</span>
+          </label>
+        </div>
+      </fieldset>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div class="field">
+          <label for="regular-rate">FLSA regular rate (not always your hourly wage) ($)</label>
+          <input type="number" id="regular-rate" name="regular-rate" min="0" step="0.01" placeholder="e.g. 20.00" inputmode="decimal" />
+          <span class="hint">
+            FLSA regular rate can exceed your posted hourly wage when nondiscretionary bonuses or commissions are included.
+            Premium = 0.5 × <strong>regular rate</strong>, not 0.5 × posted wage.
+            Do <em>not</em> paste your “OT rate” here — that overstates the premium.
+          </span>
+        </div>
+        <div class="field">
+          <label for="ot-hours">Overtime hours</label>
+          <input type="number" id="ot-hours" name="ot-hours" min="0" step="0.25" placeholder="e.g. 10" inputmode="decimal" />
+          <span class="hint">FLSA §7 OT hours for the year paid at time-and-a-half (1.5×).</span>
+        </div>
+      </div>
+      <div class="callout mt-4">
+        <strong class="text-ink">FLSA time-and-a-half assumption:</strong> Qualified OT premium = <em>0.5 × FLSA regular rate × OT hours</em>.
+        Example: $20/hr regular rate → $10/hr premium. 10 OT hours → <strong>$100</strong> qualified (not $300 total OT wages).
+      </div>
+    </div>
+
+    <div id="panel-mode-b" class="mode-panel">
+      <div class="field">
+        <label for="qualified-premium">Qualified OT premium ($)</label>
+        <input type="number" id="qualified-premium" name="qualified-premium" min="0" step="0.01" placeholder="e.g. 100.00" inputmode="decimal" />
+        <span class="hint">Enter only the premium above regular rate — from a pay stub “OT premium” line or employer-reported qualified OT — not total overtime wages paid.</span>
+      </div>
+    </div>
+
+    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+      <div class="field">
+        <label for="total-ot-wages">Total OT wages paid (optional)</label>
+        <input type="number" id="total-ot-wages" name="total-ot-wages" min="0" step="0.01" placeholder="Education only" inputmode="decimal" />
+        <span class="hint">For education — premium is not total OT pay. Not used in the deduction math.</span>
+      </div>
+      <div class="field">
+        <label for="magi">MAGI estimate ($)</label>
+        <input type="number" id="magi" name="magi" min="0" step="1" placeholder="e.g. 145000" inputmode="decimal" required />
+        <span class="hint">Modified adjusted gross income estimate for phaseout (Schedule 1-A Part I).</span>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary mt-6">Calculate deduction</button>
+  </form>
+</section>
+
+<section id="ot-results" class="results mt-6 card hidden" aria-live="polite">
+  <div id="ot-alert" class="alert" hidden></div>
+  <div id="ot-estimate-banner" class="alert alert-warn" hidden>
+    <strong>Estimate only.</strong>
+    You chose a simple hourly estimate. Nondiscretionary bonuses, commissions, or other non-hourly pay can raise the FLSA regular rate above your stated wage — so this premium may be wrong. Prefer Mode B / employer-reported qualified OT when available.
+  </div>
+
+  <div class="result-hero mb-4">
+    <div class="text-xs font-medium uppercase tracking-wide text-mute">Estimated Schedule 1-A overtime deduction</div>
+    <div class="amount" id="ot-deduction">$0</div>
+    <div class="mt-1 text-sm text-mute">
+      Tax year <span id="ot-year-label">2026</span> · <span id="ot-status-label">Single</span>
+    </div>
+  </div>
+
+  <PayrollCallout subject="overtime" />
+
+  <div class="result-rows mt-4">
+    <div class="result-row">
+      <span class="k">Estimated qualified OT premium used</span>
+      <span class="v" id="ot-qualified">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Annual cap for your status</span>
+      <span class="v" id="ot-cap">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Amount before phaseout</span>
+      <span class="v" id="ot-before">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Phaseout reduction</span>
+      <span class="v" id="ot-reduction">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">Unused cap before phaseout</span>
+      <span class="v" id="ot-remaining">—</span>
+    </div>
+    <div class="result-row">
+      <span class="k">MAGI phaseout threshold</span>
+      <span class="v" id="ot-threshold-label">—</span>
+    </div>
+  </div>
+
+  <div class="mt-5 rounded-[6px] border border-hairline bg-hairline-soft p-4">
+    <h3 class="mb-2 text-sm font-semibold text-ink">How this estimate was built</h3>
+    <p id="ot-explain" class="m-0 text-sm text-body"></p>
+  </div>
+</section>
+
+<script>
+  import {
+    computeOtDeduction,
+    money,
+    moneyExact,
+    parseNum,
+  } from "../lib/schedule1a";
+
+  function getRadioValue(name) {
+    const checked = document.querySelector(`input[name="${name}"]:checked`);
+    return checked ? checked.value : "";
+  }
+
+  function setText(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
+
+  function showResults(on) {
+    const el = document.getElementById("ot-results");
+    if (!el) return;
+    el.classList.toggle("hidden", !on);
+    el.hidden = !on;
+  }
+
+  function setAlert(id, html, kind) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!html) {
+      el.hidden = true;
+      el.innerHTML = "";
+      return;
+    }
+    el.hidden = false;
+    el.className = "alert alert-" + (kind || "info");
+    el.innerHTML = html;
+  }
+
+  function clearOtNumericResults(year, statusLabel) {
+    setText("ot-deduction", money(0));
+    setText("ot-qualified", moneyExact(0));
+    setText("ot-cap", "—");
+    setText("ot-before", money(0));
+    setText("ot-reduction", money(0));
+    setText("ot-remaining", "—");
+    setText("ot-threshold-label", "—");
+    setText("ot-year-label", year);
+    setText("ot-status-label", statusLabel);
+  }
+
+  function updateYearNotes() {
+    const yearEl = document.getElementById("tax-year");
+    if (!yearEl) return;
+    const year = yearEl.value;
+    const note2025 = document.getElementById("ty2025-note");
+    const note2026 = document.getElementById("ty2026-note");
+    if (note2025) note2025.hidden = year !== "2025";
+    if (note2026) note2026.hidden = year === "2025";
+  }
+
+  let currentMode = "a";
+
+  function setMode(mode) {
+    currentMode = mode;
+    const modeA = document.getElementById("mode-a");
+    const modeB = document.getElementById("mode-b");
+    const panelA = document.getElementById("panel-mode-a");
+    const panelB = document.getElementById("panel-mode-b");
+    modeA?.classList.toggle("active", mode === "a");
+    modeB?.classList.toggle("active", mode === "b");
+    panelA?.classList.toggle("active", mode === "a");
+    panelB?.classList.toggle("active", mode === "b");
+    modeA?.setAttribute("aria-pressed", mode === "a" ? "true" : "false");
+    modeB?.setAttribute("aria-pressed", mode === "b" ? "true" : "false");
+  }
+
+  function runOtCalc() {
+    const estimateBanner = document.getElementById("ot-estimate-banner");
+    if (estimateBanner) estimateBanner.hidden = true;
+    updateYearNotes();
+
+    const out = computeOtDeduction({
+      filingStatus: document.getElementById("filing-status").value,
+      taxYear: document.getElementById("tax-year").value,
+      magi: parseNum(document.getElementById("magi").value),
+      flsa7: getRadioValue("flsa7"),
+      mode: currentMode,
+      regularRate: parseNum(document.getElementById("regular-rate").value),
+      otHours: parseNum(document.getElementById("ot-hours").value),
+      rrKnow: getRadioValue("rr-know") || "known",
+      qualifiedPremium: parseNum(document.getElementById("qualified-premium").value),
+      totalOtWages: parseNum(document.getElementById("total-ot-wages").value),
+    });
+
+    showResults(true);
+
+    if (out.kind === "blocked") {
+      setAlert("ot-alert", out.alertHtml, out.alertKind);
+      clearOtNumericResults(out.year, out.statusLabel);
+      setText("ot-explain", out.explain);
+      return;
+    }
+
+    if (estimateBanner) {
+      estimateBanner.hidden = !out.estimateOnly;
+    }
+
+    setText("ot-deduction", money(out.result.deduction));
+    setText("ot-qualified", moneyExact(out.result.qualified));
+    setText("ot-cap", money(out.result.cap));
+    setText("ot-before", money(out.result.beforePhaseout));
+    setText("ot-reduction", money(out.result.reduction));
+    setText("ot-remaining", moneyExact(out.result.remainingRoom));
+    setText("ot-year-label", out.year);
+    setText("ot-status-label", out.statusLabel);
+    setText("ot-threshold-label", money(out.result.threshold));
+    setText("ot-explain", out.explain);
+    setAlert("ot-alert", out.alertHtml, out.alertKind || "info");
+  }
+
+  const form = document.getElementById("ot-form");
+  if (form) {
+    document.getElementById("mode-a")?.addEventListener("click", () => {
+      setMode("a");
+      if (!document.getElementById("ot-results")?.classList.contains("hidden")) runOtCalc();
+    });
+    document.getElementById("mode-b")?.addEventListener("click", () => {
+      setMode("b");
+      if (!document.getElementById("ot-results")?.classList.contains("hidden")) runOtCalc();
+    });
+    updateYearNotes();
+    document.getElementById("tax-year")?.addEventListener("change", () => {
+      updateYearNotes();
+      if (!document.getElementById("ot-results")?.classList.contains("hidden")) runOtCalc();
+    });
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      runOtCalc();
+    });
+    form.addEventListener("input", () => {
+      if (!document.getElementById("ot-results")?.classList.contains("hidden")) runOtCalc();
+    });
+    form.addEventListener("change", () => {
+      if (!document.getElementById("ot-results")?.classList.contains("hidden")) runOtCalc();
+    });
+  }
+</script>

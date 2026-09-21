@@ -1,0 +1,31 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+---
+
+<BaseLayout
+  title="About NoTaxOTCalculator | Schedule 1-A Calculators"
+  description="About NoTaxOTCalculator — free educational Schedule 1-A No Tax on Overtime and Tips income-tax deduction estimators. Not tax advice. FICA still applies."
+  canonicalPath="/about/"
+>
+  <SiteHeader slot="header" current="about" />
+  <div class="site-wrap prose-seo py-10">
+    <h1 class="text-3xl tracking-tight">About NoTaxOTCalculator</h1>
+    <p class="mt-4">
+      <strong>NoTaxOTCalculator</strong> (domain candidate <strong>notaxotcalc.com</strong>) publishes free, private,
+      educational calculators for the IRS Schedule 1-A <em>No Tax on Overtime</em> and <em>No Tax on Tips</em>
+      federal income-tax deductions.
+    </p>
+    <p>
+      We focus on clarity: premium-only overtime math, FLSA §7 eligibility, MAGI phaseout, and an explicit reminder that
+      Social Security and Medicare (FICA) still apply. These tools do not file returns, do not give tax advice, and are not
+      affiliated with the IRS, TurboTax, or any government agency.
+    </p>
+    <p>
+      Start with the <a href="/">overtime calculator</a> or the <a href="/tips/">tips calculator</a>.
+      Questions: <a href="/contact/">contact</a>.
+    </p>
+  </div>
+  <SiteFooter slot="footer" />
+</BaseLayout>

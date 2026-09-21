@@ -1,0 +1,15 @@
+---
+interface Props {
+  variant?: "ot" | "tips";
+}
+const { variant = "ot" } = Astro.props;
+const subject = variant === "tips" ? "tips" : "overtime";
+const part = variant === "tips" ? " (Schedule 1-A Part II)" : " (Schedule 1-A)";
+---
+
+<div class="disclaimer-banner" role="note">
+  <strong class="text-ink">Disclaimer — not tax advice.</strong>
+  This free calculator is an educational estimate of a <em>federal income-tax deduction</em> only{part}.
+  Social Security and Medicare (FICA) taxes on {subject} still apply — this is not a payroll-tax escape.
+  It is not affiliated with the IRS, TurboTax, or any tax software. Rules can change; confirm with IRS Schedule 1-A instructions or a qualified tax professional before filing.
+</div>

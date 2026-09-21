@@ -1,0 +1,126 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import { otFaqItems } from "../../components/FaqOt.astro";
+import { tipsFaqItems } from "../../components/FaqTips.astro";
+
+const additionalFaqItems = [
+  {
+    q: "Is overtime pay completely tax-free?",
+    a: "No. The federal provision is a deduction for qualified overtime compensation, not an exemption for every dollar of overtime pay. Overtime can still be subject to federal withholding and Social Security and Medicare taxes.",
+  },
+  {
+    q: "How much overtime can I deduct?",
+    a: "For overtime, the annual cap is generally $12,500 for Single, Head of Household, and Qualifying Surviving Spouse filers, or $25,000 for Married Filing Jointly. The available amount can be reduced by the MAGI phaseout and eligibility rules.",
+  },
+  {
+    q: "What is the MAGI income phaseout?",
+    a: "The phaseout begins above $150,000 of MAGI for Single, Head of Household, and Qualifying Surviving Spouse filers, and above $300,000 for Married Filing Jointly. This calculator reduces the estimate by $100 for each full $1,000 above the applicable threshold.",
+  },
+  {
+    q: "Does the calculator include state taxes?",
+    a: "No. NoTaxOTCalculator provides a federal income-tax estimate only. State and local rules may differ and are not included in the result.",
+  },
+  {
+    q: "What filing statuses does the overtime calculator support?",
+    a: "The calculator supports Single, Married Filing Jointly, Married Filing Separately, Head of Household, and Qualifying Surviving Spouse. Married Filing Separately is treated as ineligible under the current Schedule 1-A rules used by this estimator.",
+  },
+  {
+    q: "What is W-2 Code TT?",
+    a: "For tax years where it applies, W-2 Box 12 Code TT is used for qualified overtime reporting. It is not the same as total overtime wages and it is not your final tax savings. Always compare the information on your tax documents with current IRS instructions.",
+  },
+  {
+    q: "Why is tax still withheld from my overtime paycheck?",
+    a: "A deduction claimed on a tax return does not necessarily stop payroll withholding during the year. Overtime wages can still have federal income tax withholding and FICA taxes applied. The final deduction is determined when the return is prepared.",
+  },
+  {
+    q: "Can I claim the deduction if I take the standard deduction?",
+    a: "The qualified overtime deduction is generally available whether you itemize or take the standard deduction, assuming you meet the applicable eligibility and reporting requirements. Confirm the current rules before filing.",
+  },
+  {
+    q: "Can I use the calculator for double-time or unusual overtime?",
+    a: "Mode A is limited to a simple FLSA time-and-a-half estimate. Double-time, daily overtime, seventh-day overtime, bonuses, commissions, and unusual payroll arrangements may require a different regular-rate calculation. Use a reported qualified premium in Mode B when available and verify complex situations with a professional.",
+  },
+  {
+    q: "Does the calculator calculate my exact refund or tax bill?",
+    a: "No. It estimates a possible Schedule 1-A deduction. It does not prepare a complete tax return, calculate every credit or deduction, or guarantee a refund, tax savings amount, or final tax liability.",
+  },
+  {
+    q: "What information should I have before using the calculator?",
+    a: "For overtime, have your filing status, tax year, FLSA eligibility answer, regular rate or reported qualified premium, overtime hours, and estimated MAGI. For tips, have your filing status, tax year, qualified tips, and estimated MAGI. Your actual tax documents take priority for filing.",
+  },
+  {
+    q: "Does NoTaxOTCalculator provide tax or financial advice?",
+    a: "No. NoTaxOTCalculator is an independent educational project, not a tax-preparation service and not a provider of tax, legal, accounting, or financial advice. The creators are not certified financial advisors. Consult a qualified professional for advice about your situation.",
+  },
+  {
+    q: "What happens to the information I enter?",
+    a: "The calculators run in your browser and do not ask for an SSN, tax-account login, uploaded tax documents, or account credentials. Do not enter sensitive personal information into the calculator.",
+  },
+  {
+    q: "Where can I verify the rules?",
+    a: "Use the IRS Schedule 1-A form and instructions, IRS qualified overtime and tips guidance, and current Department of Labor FLSA information. The overtime calculator also links to official sources below its methodology explanation.",
+  },
+];
+
+const faqItems = [...otFaqItems, ...additionalFaqItems, ...tipsFaqItems];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqItems.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+---
+
+<BaseLayout
+  title="Frequently Asked Questions | NoTaxOTCalculator"
+  description="Answers about qualified overtime and tips deductions, Schedule 1-A limits, MAGI phaseouts, W-2 reporting, FICA, privacy, and how to use NoTaxOTCalculator."
+  canonicalPath="/faq/"
+  jsonLd={faqLd}
+>
+  <SiteHeader slot="header" current="faq" />
+
+  <div class="site-wrap py-10 sm:py-14">
+    <section class="hero mb-10" aria-labelledby="faq-heading">
+      <p class="mb-2 font-mono text-xs font-medium uppercase tracking-wide text-mute">Help center · Schedule 1-A</p>
+      <h1 id="faq-heading" class="text-3xl tracking-tight sm:text-[40px]">Frequently Asked Questions</h1>
+      <p class="mt-3 max-w-2xl text-[17px] leading-7 text-body">
+        Clear answers about qualified overtime and tips deductions, eligibility, limits, reporting, privacy, and what these educational estimates can and cannot tell you.
+      </p>
+    </section>
+
+    <section class="card faq" aria-labelledby="overtime-faq-heading">
+      <h2 id="overtime-faq-heading" class="mb-2 text-xl">Overtime deduction questions</h2>
+      <p class="mb-4 text-sm text-mute">Schedule 1-A Part III, FLSA eligibility, premium-only math, and reporting.</p>
+      {faqItems.slice(0, otFaqItems.length + additionalFaqItems.length).map((item) => (
+        <details>
+          <summary>{item.q}</summary>
+          <div class="answer">{item.a}</div>
+        </details>
+      ))}
+    </section>
+
+    <section class="card faq mt-8" aria-labelledby="tips-faq-heading">
+      <h2 id="tips-faq-heading" class="mb-2 text-xl">Tips deduction questions</h2>
+      <p class="mb-4 text-sm text-mute">Schedule 1-A Part II, qualified tips, caps, phaseouts, and FICA.</p>
+      {tipsFaqItems.map((item) => (
+        <details>
+          <summary>{item.q}</summary>
+          <div class="answer">{item.a}</div>
+        </details>
+      ))}
+    </section>
+
+    <section class="callout mt-8" role="note">
+      <strong class="text-ink">Educational estimate only.</strong>
+      The phrase “no tax on overtime” or “no tax on tips” does not mean wages are completely tax-free. Verify your result against current IRS forms, instructions, and actual tax documents before filing.
+    </section>
+  </div>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>

@@ -1,0 +1,106 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+import Disclaimer from "../../components/Disclaimer.astro";
+import PayrollCallout from "../../components/PayrollCallout.astro";
+import TipsCalculator from "../../components/TipsCalculator.astro";
+import FaqTips, { tipsFaqItems } from "../../components/FaqTips.astro";
+
+const site = Astro.site?.toString().replace(/\/$/, "") || "https://notaxotcalc.com";
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: tipsFaqItems.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
+const webAppLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "No Tax on Tips Calculator",
+  applicationCategory: "FinanceApplication",
+  operatingSystem: "Any",
+  url: site + "/tips/",
+  description:
+    "Free educational Schedule 1-A Part II No Tax on Tips federal income-tax deduction estimator. $25,000 cap, MAGI phaseout. FICA still applies.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+  publisher: { "@type": "Organization", name: "NoTaxOTCalculator", url: site },
+};
+---
+
+<BaseLayout
+  title="No Tax on Tips Calculator (2025–2028) | Schedule 1-A Deduction Estimate"
+  description="Free No Tax on Tips Calculator for IRS Schedule 1-A Part II. Estimate your federal income-tax deduction with $25,000 cap and MAGI phaseout. FICA still applies. Not tax advice."
+  canonicalPath="/tips/"
+  jsonLd={[webAppLd, faqLd]}
+>
+  <SiteHeader slot="header" current="tips" />
+
+  <div class="site-wrap py-8 sm:py-10">
+    <Disclaimer variant="tips" />
+
+    <section class="hero mt-8 mb-8">
+      <p class="mb-2 font-mono text-xs font-medium uppercase tracking-wide text-mute">Schedule 1-A · Part II</p>
+      <h1 class="text-3xl sm:text-[40px] sm:leading-tight tracking-tight">
+        No Tax on Tips Calculator
+      </h1>
+      <p class="lede mt-3 max-w-2xl text-[17px] leading-7 text-body">
+        Estimate your 2025–2028 IRS Schedule 1-A <strong class="font-medium text-ink">Part II</strong>
+        <strong class="font-medium text-ink"> federal income-tax deduction</strong>
+        for qualified tips — up to $25,000 per return, subject to MAGI phaseout.
+      </p>
+      <div class="mt-4">
+        <PayrollCallout subject="tips" />
+      </div>
+    </section>
+
+    <TipsCalculator />
+
+    <section class="card eligibility-notes mt-8" aria-labelledby="elig-heading">
+      <h2 id="elig-heading" class="mb-3 text-lg">Eligibility notes (Schedule 1-A, Part II)</h2>
+      <ul class="list-disc space-y-2 pl-5 text-sm text-body">
+        <li>Cap: <strong class="text-ink">$25,000</strong> per return (same for single and married filing jointly).</li>
+        <li>MAGI phaseout begins at <strong class="text-ink">$150,000</strong> (single etc.) or <strong class="text-ink">$300,000</strong> (MFJ). Reduction = floor(excess MAGI ÷ 1,000) × $100.</li>
+        <li>Married taxpayers generally must file jointly to claim this deduction.</li>
+        <li>A valid Social Security number (SSN) is required.</li>
+        <li>You must work in a tipped occupation (see IRS tipped occupations guidance).</li>
+        <li>This is a <strong class="text-ink">federal income-tax deduction</strong>; FICA (Social Security / Medicare) on tips still applies.</li>
+        <li>Available tax years <strong class="text-ink">2025–2028</strong> (sunsets after 2028).</li>
+      </ul>
+    </section>
+
+    <article class="prose-seo mt-14" aria-labelledby="guide-heading">
+      <h2 id="guide-heading">Using the No Tax on Tips calculator</h2>
+      <p>
+        This <strong>no tax on tips calculator</strong> estimates Schedule 1-A Part II for tipped workers.
+        Enter qualified tips and a MAGI estimate to see the capped, phaseout-adjusted federal income-tax deduction.
+        It does not verify occupation, does not file a return, and does not reduce FICA.
+      </p>
+      <p>
+        Caps are <strong>$25,000 per return</strong>. Phaseout uses the same floor(excess ÷ 1,000) × $100 formula as overtime.
+        Married Filing Separately is treated as ineligible in this MVP. For overtime premium math, use the
+        <a href="/">No Tax on Overtime Calculator</a>.
+      </p>
+    </article>
+
+    <FaqTips />
+
+    <section id="sources" class="card sources mt-12" aria-labelledby="sources-heading">
+      <h2 id="sources-heading" class="mb-3 text-lg">Sources</h2>
+      <ol class="list-decimal space-y-2 pl-5 text-sm text-body">
+        <li><a href="https://www.irs.gov/pub/irs-pdf/f1040s1a.pdf" rel="noopener noreferrer" target="_blank">IRS Form Schedule 1-A (PDF)</a> — Part II (tips) and Part III (overtime)</li>
+        <li><a href="https://www.irs.gov/newsroom/schedule-1-a-additional-deductions-what-to-know-about-the-new-form" rel="noopener noreferrer" target="_blank">Schedule 1-A: what to know about the new form</a></li>
+        <li><a href="https://www.irs.gov/newsroom/what-the-no-tax-on-tips-deduction-means-for-you" rel="noopener noreferrer" target="_blank">What the No Tax on Tips deduction means for you</a></li>
+        <li><a href="https://www.irs.gov/newsroom/what-to-know-about-the-no-tax-on-overtime-deduction" rel="noopener noreferrer" target="_blank">What to know about the No Tax on Overtime deduction</a></li>
+      </ol>
+      <p class="mt-3 text-sm">Also see our <a href="/">No Tax on Overtime calculator</a> (Schedule 1-A, Part III).</p>
+    </section>
+  </div>
+
+  <SiteFooter slot="footer" />
+</BaseLayout>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+---
+
+<BaseLayout
+  title="Page not found | NoTaxOTCalculator"
+  description="The page you requested was not found on NoTaxOTCalculator."
+  canonicalPath="/404"
+  noindex={true}
+>
+  <SiteHeader slot="header" />
+  <div class="site-wrap py-20 text-center">
+    <p class="font-mono text-xs uppercase tracking-wide text-mute">404</p>
+    <h1 class="mt-2 text-3xl tracking-tight">Page not found</h1>
+    <p class="mt-3 text-body">That URL is not on NoTaxOTCalculator.</p>
+    <p class="mt-6 flex flex-wrap justify-center gap-3">
+      <a href="/" class="btn-primary no-underline">Overtime calculator</a>
+      <a href="/tips/" class="btn-ghost no-underline">Tips calculator</a>
+    </p>
+  </div>
+  <SiteFooter slot="footer" />
+</BaseLayout>

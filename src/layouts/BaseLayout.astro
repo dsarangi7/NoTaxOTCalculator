@@ -1,0 +1,99 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+  ogImage?: string;
+  ogType?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath = "/",
+  ogImage = "/og-default.png",
+  ogType = "website",
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+
+const site = (Astro.site?.toString() || "https://notaxotcalculator.com").replace(/\/$/, "");
+const canonicalUrl = new URL(canonicalPath, site + "/").href;
+const ogUrl = new URL(ogImage, site + "/").href;
+const ga4 = import.meta.env.PUBLIC_GA4_ID as string | undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:site_name" content="NoTaxOTCalculator" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#22c55e" />
+    <meta name="generator" content={Astro.generator} />
+
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem("notaxotcalc-theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+      })();
+    </script>
+
+    {jsonLd && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(jsonLd)}
+      />
+    )}
+
+    {ga4 && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`}></script>
+        <script is:inline define:vars={{ ga4 }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag("js", new Date());
+          gtag("config", ga4);
+        </script>
+      </>
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink focus:px-3 focus:py-2 focus:text-sm focus:text-on-primary"
+    >
+      Skip to content
+    </a>
+    <slot name="header" />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <slot name="footer" />
+  </body>
+</html>

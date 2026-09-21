@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+---
+
+<BaseLayout
+  title="Privacy Policy | NoTaxOTCalculator"
+  description="Privacy policy for NoTaxOTCalculator. Calculator inputs stay in your browser. Analytics only if configured."
+  canonicalPath="/privacy/"
+>
+  <SiteHeader slot="header" />
+  <div class="site-wrap prose-seo py-10">
+    <h1 class="text-3xl tracking-tight">Privacy Policy</h1>
+    <p class="text-sm text-mute">Last updated: September 21, 2026</p>
+    <p class="mt-4">
+      NoTaxOTCalculator calculator pages run entirely in your browser. Filing status, hours, rates, tips, and MAGI estimates
+      are not sent to our servers for calculation — there is no account system and no server-side tax engine.
+    </p>
+    <h2>Analytics</h2>
+    <p>
+      If a Google Analytics 4 measurement ID is configured via environment variable, anonymous usage analytics may load.
+      Until then, no GA4 script is injected. We do not use AdSense or adsbygoogle on this site during the initial monitor-only period.
+    </p>
+    <h2>Hosting</h2>
+    <p>
+      Static files may be hosted on Cloudflare Pages or similar CDN hosts, which may log standard request metadata
+      (IP, user agent, path) for security and reliability.
+    </p>
+    <h2>Contact</h2>
+    <p>Privacy questions: see <a href="/contact/">Contact</a>.</p>
+  </div>
+  <SiteFooter slot="footer" />
+</BaseLayout>

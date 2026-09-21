@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+---
+
+<BaseLayout
+  title="Contact | NoTaxOTCalculator"
+  description="Contact NoTaxOTCalculator by temporary email for site feedback or corrections. Educational calculator only; not tax or financial advice."
+  canonicalPath="/contact/"
+>
+  <SiteHeader slot="header" current="contact" />
+  <div class="site-wrap prose-seo py-10">
+    <h1 class="text-3xl tracking-tight">Contact</h1>
+    <p class="mt-4">For site feedback, corrections, or questions about the calculator, email <a href="mailto:dsarangi7@gmail.com">dsarangi7@gmail.com</a>.</p>
+    <p class="text-sm text-mute">This is a temporary contact address. A branded domain email will be added later.</p>
+    <p>
+      NoTaxOTCalculator is an independent educational project. We are not certified financial advisors, tax professionals,
+      accountants, or attorneys, and we cannot provide personal tax advice or review individual returns. For filing questions,
+      use current IRS Schedule 1-A instructions or consult a qualified tax professional.
+    </p>
+  </div>
+  <SiteFooter slot="footer" />
+</BaseLayout>

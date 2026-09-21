@@ -1,0 +1,51 @@
+---
+export const otFaqItems = [
+  {
+    q: "What is a “no tax on overtime calculator”?",
+    a: "It estimates how much overtime premium you may deduct under IRS Schedule 1-A (No Tax on Overtime) as a federal income-tax deduction. Social Security and Medicare taxes on overtime still apply. This tool applies the annual cap and MAGI phaseout for an educational estimate — it does not file a return or guarantee a refund.",
+  },
+  {
+    q: "Is qualified overtime the same as my total OT paycheck?",
+    a: "No. Qualified overtime compensation is the amount above your FLSA regular rate (the half-time premium on time-and-a-half). If your regular rate is $20/hr and OT is $30/hr, only $10/hr is the premium. Ten OT hours → $100 qualified, not $300.",
+  },
+  {
+    q: "Is my hourly wage the same as the FLSA regular rate?",
+    a: "Not always. Under the FLSA, the regular rate can include nondiscretionary bonuses, commissions, and certain other pay — so it may be higher than your posted hourly wage. The deductible premium is 0.5 × regular rate, not 0.5 × posted wage. Pasting your OT rate into the regular-rate box overstates the premium. If you only know your posted hourly wage and have bonuses, choose “Simple hourly estimate only” and treat the result as estimate-only — or use Mode B with a pay-stub premium.",
+  },
+  {
+    q: "Does state-law or company-policy overtime qualify?",
+    a: "Generally no — only overtime required under federal FLSA §7 is Schedule 1-A deductible (CRS). If your answer is No or Not sure, this calculator shows $0 rather than a false positive deduction estimate.",
+  },
+  {
+    q: "How does the MAGI phaseout work?",
+    a: "If your MAGI exceeds $150,000 (single / HoH / QSS) or $300,000 (MFJ), the deduction is reduced by $100 for each full $1,000 of MAGI over the threshold (floor division). The deduction cannot go below zero.",
+  },
+  {
+    q: "Can married filing separately claim this?",
+    a: "Generally no — married taxpayers must file jointly to claim the No Tax on Overtime deduction. This calculator marks Married Filing Separately as ineligible. Confirm with current IRS instructions.",
+  },
+  {
+    q: "Does this cover 2025 and 2026? What about W-2 reporting?",
+    a: "Yes for tax years 2025–2028 (same MVP caps/thresholds; statute sunsets after 2028). For TY2025, employers may not separately report qualified OT on the W-2 — taxpayers may need Schedule 1-A instructions to reconstruct the premium from pay stubs. Prefer Mode B / “OT premium” line; Mode A is a last resort.",
+  },
+  {
+    q: "Do Social Security and Medicare still apply?",
+    a: "Yes. This deduction is for federal income tax only. FICA (Social Security and Medicare) taxes on overtime still apply.",
+  },
+  {
+    q: "Is this affiliated with the IRS or TurboTax?",
+    a: "No. This is an independent educational calculator from NoTaxOTCalculator. It is not tax advice, not filing software, and not affiliated with the IRS, Intuit TurboTax, or any government agency.",
+  },
+];
+---
+
+<section id="faq" class="faq mt-12" aria-labelledby="faq-heading">
+  <h2 id="faq-heading" class="mb-2 text-xl">FAQ — no tax on overtime calculator</h2>
+  <p class="mb-4 text-sm text-mute">Straight answers about Schedule 1-A overtime deduction estimates.</p>
+  {otFaqItems.map((item) => (
+    <details>
+      <summary>{item.q}</summary>
+      <div class="answer">{item.a}</div>
+    </details>
+  ))}
+</section>

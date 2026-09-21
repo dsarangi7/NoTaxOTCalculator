@@ -1,0 +1,261 @@
+@import "tailwindcss";
+
+/* NoTaxOTCalculator — DESIGN.md (Vercel / Geist) tokens */
+@theme {
+  --color-ink: #171717;
+  --color-on-primary: #ffffff;
+  --color-body: #4d4d4d;
+  --color-mute: #8f8f8f;
+  --color-faint: #a1a1a1;
+  --color-hairline: #ebebeb;
+  --color-hairline-soft: #f2f2f2;
+  --color-canvas: #fafafa;
+  --color-canvas-elevated: #ffffff;
+  --color-link: #0070f3;
+  --color-link-deep: #0761d1;
+  --color-error: #ee0000;
+  --color-error-deep: #c50000;
+  --color-warning: #f5a623;
+  --color-warning-soft: #ffefcf;
+  --color-warning-deep: #ab570a;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 100px;
+}
+
+@font-face {
+  font-family: "Geist";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-sans/Geist-Variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("https://cdn.jsdelivr.net/npm/geist@1.3.1/dist/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2");
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-canvas text-body font-sans antialiased;
+    font-feature-settings: "ss01" on, "cv01" on;
+    overflow-x: clip;
+    min-width: 0;
+  }
+  h1, h2, h3, h4 {
+    @apply text-ink font-semibold tracking-tight;
+    text-wrap: balance;
+  }
+  a {
+    @apply text-link underline-offset-2 hover:text-link-deep focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: #d3e5ff;
+  }
+
+  html[data-theme="dark"] {
+    --color-ink: #f4f4f5;
+    --color-on-primary: #111113;
+    --color-body: #b8b8bd;
+    --color-mute: #9a9aa2;
+    --color-faint: #73737c;
+    --color-hairline: #333338;
+    --color-hairline-soft: #242428;
+    --color-canvas: #0e0e10;
+    --color-canvas-elevated: #18181b;
+    --color-link: #7db3ff;
+    --color-link-deep: #a8ccff;
+    --color-warning-soft: #3b2d13;
+    --color-warning-deep: #f4c56d;
+    color-scheme: dark;
+  }
+
+  html[data-theme="dark"] ::selection {
+    background: #24456d;
+  }
+}
+
+@layer components {
+  .site-wrap {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+    min-width: 0;
+  }
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center rounded-full bg-ink px-5 py-2.5 text-[15px] font-medium text-on-primary transition
+      hover:bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex min-h-11 items-center justify-center rounded-[6px] border border-hairline bg-canvas-elevated px-3 py-2 text-sm font-medium text-ink
+      hover:bg-hairline-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink;
+  }
+  .card {
+    @apply rounded-[12px] border border-hairline bg-canvas-elevated p-4 sm:p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)];
+    max-width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .callout {
+    @apply rounded-[6px] border border-hairline bg-hairline-soft px-3.5 py-3 text-sm text-body;
+  }
+  .callout-warn {
+    @apply border-warning bg-warning-soft text-warning-deep;
+  }
+  .callout-payroll {
+    @apply border-ink/15 bg-white;
+  }
+  .disclaimer-banner {
+    @apply rounded-[6px] border border-hairline bg-white px-3.5 py-3 text-sm text-body;
+  }
+  .field label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+  .field .hint {
+    @apply mt-1.5 block text-xs text-mute;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    @apply w-full min-h-11 rounded-[6px] border border-hairline bg-white px-3 py-2.5 text-base text-ink
+      placeholder:text-faint
+      focus:border-ink focus:outline-none focus:ring-2 focus:ring-ink/10;
+    /* ≥16px avoids iOS input zoom; min-h-11 ≈ 44px tap target */
+  }
+  .radio-option {
+    @apply flex min-h-11 cursor-pointer items-center gap-2.5 rounded-[6px] border border-hairline bg-white px-3 py-3 text-sm text-ink
+      hover:bg-hairline-soft has-[:checked]:border-ink has-[:checked]:bg-hairline-soft;
+  }
+  .radio-option input {
+    @apply mt-0.5 h-5 w-5 shrink-0 accent-ink;
+  }
+  .mode-toggle {
+    @apply mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2;
+  }
+  .mode-toggle button {
+    @apply min-h-11 rounded-[6px] border border-hairline bg-white px-3 py-2.5 text-sm font-medium text-body
+      hover:bg-hairline-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink;
+  }
+  .mode-toggle button.active {
+    @apply border-ink bg-ink text-on-primary;
+  }
+  .mode-panel {
+    @apply mt-4 hidden;
+  }
+  .mode-panel.active {
+    @apply block;
+  }
+  .alert {
+    @apply mb-4 rounded-[6px] border px-3.5 py-3 text-sm;
+  }
+  .alert-info {
+    @apply border-hairline bg-hairline-soft text-body;
+  }
+  .alert-warn {
+    @apply border-warning bg-warning-soft text-warning-deep;
+  }
+  .alert-danger {
+    @apply border-error/40 bg-red-50 text-error-deep;
+  }
+  .result-hero .amount {
+    @apply text-4xl font-semibold tracking-tight text-ink sm:text-5xl;
+  }
+  .result-row {
+    @apply flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-hairline py-2.5 text-sm last:border-0;
+  }
+  .result-row .k {
+    @apply min-w-0 flex-1 text-mute;
+    overflow-wrap: anywhere;
+  }
+  .result-row .v {
+    @apply shrink-0 font-medium text-ink tabular-nums;
+  }
+  .faq details {
+    @apply border-b border-hairline py-1;
+  }
+  .faq summary {
+    @apply flex min-h-11 cursor-pointer list-none items-center text-[15px] font-medium text-ink outline-none
+      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink;
+  }
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq .answer {
+    @apply mt-2 text-sm leading-relaxed text-body;
+  }
+  .prose-seo {
+    @apply text-[15px] leading-7 text-body;
+  }
+  .prose-seo h2 {
+    @apply mt-10 mb-3 text-xl;
+  }
+  .prose-seo h3 {
+    @apply mt-6 mb-2 text-lg;
+  }
+  .prose-seo p {
+    @apply mb-4;
+  }
+  .prose-seo ul {
+    @apply mb-4 list-disc space-y-1.5 pl-5;
+  }
+  .prose-seo a {
+    @apply underline;
+  }
+}
+
+@layer utilities {
+  html[data-theme="dark"] .bg-white,
+  html[data-theme="dark"] .disclaimer-banner,
+  html[data-theme="dark"] .callout-payroll,
+  html[data-theme="dark"] .field input,
+  html[data-theme="dark"] .field select,
+  html[data-theme="dark"] .field textarea,
+  html[data-theme="dark"] .radio-option,
+  html[data-theme="dark"] .mode-toggle button {
+    background-color: var(--color-canvas-elevated) !important;
+    color: var(--color-body);
+  }
+  html[data-theme="dark"] .disclaimer-banner strong,
+  html[data-theme="dark"] .callout-payroll strong,
+  html[data-theme="dark"] .field label,
+  html[data-theme="dark"] .radio-option,
+  html[data-theme="dark"] .mode-toggle button {
+    color: var(--color-ink);
+  }
+  html[data-theme="dark"] .bg-red-50 {
+    background-color: #3b1717;
+  }
+  html[data-theme="dark"] .hover\:bg-black:hover {
+    background-color: #ffffff;
+  }
+}
+
+/* Mobile: prevent horizontal overflow; readable at 375px */
+@layer utilities {
+  .break-words-safe {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 639px) {
+  .result-hero .amount {
+    font-size: 2rem; /* readable on narrow phones without overflow */
+    line-height: 1.15;
+  }
+}

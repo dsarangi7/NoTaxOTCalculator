@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import SiteFooter from "../../components/SiteFooter.astro";
+---
+
+<BaseLayout
+  title="Terms of Use | NoTaxOTCalculator"
+  description="Terms of use for NoTaxOTCalculator educational Schedule 1-A calculators. Not tax advice."
+  canonicalPath="/terms/"
+>
+  <SiteHeader slot="header" />
+  <div class="site-wrap prose-seo py-10">
+    <h1 class="text-3xl tracking-tight">Terms of Use</h1>
+    <p class="text-sm text-mute">Last updated: September 21, 2026</p>
+    <p class="mt-4">
+      NoTaxOTCalculator provides educational estimates of possible Schedule 1-A federal income-tax deductions.
+      Results are approximate, may omit rules that apply to your facts, and can become outdated when IRS guidance changes.
+    </p>
+    <h2>Not tax advice</h2>
+    <p>
+      Nothing on this site is legal, tax, or accounting advice. Confirm with IRS Schedule 1-A instructions or a qualified
+      professional before filing. We are not affiliated with the IRS or TurboTax.
+    </p>
+    <h2>FICA</h2>
+    <p>
+      Estimates concern federal income-tax deductions only. Social Security and Medicare (FICA) taxes on overtime and tips
+      still apply.
+    </p>
+    <h2>Limitation</h2>
+    <p>
+      To the maximum extent permitted by law, NoTaxOTCalculator and its operators are not liable for decisions made using these
+      estimates. Use at your own risk.
+    </p>
+  </div>
+  <SiteFooter slot="footer" />
+</BaseLayout>
